@@ -52,14 +52,13 @@ def h_esfera(x):
 
 ```{python}
 # Usamos el módulo scipy.optimize para minimizar la función f_electron
-from scipy.optimize import minimize
-from scipy.optimize import approx_fprime
+from minimize import *
 
 nprotonLibres = 20
 np.random.seed(191654)
 x0 = np.random.rand(3*nprotonLibres)
 
-resultado = minimize(f_electron, x0, method='SLSQP',constraints={'type':'eq', 'fun': h_esfera}, options={'maxiter':400, 'ftol':1e-10})
+resultado = minimize_func(f_electron, x0, h_esfera)
 resultado
 ```
 
