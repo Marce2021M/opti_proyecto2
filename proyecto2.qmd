@@ -54,13 +54,17 @@ def h_esfera(x):
 # Usamos el módulo scipy.optimize para minimizar la función f_electron
 from minimize import *
 
-nprotonLibres = 20
-np.random.seed(191654)
-x0 = np.random.rand(3*nprotonLibres)
+num_points_random = 20
+initial_points = np.random.randn(3 * num_points_random)
+initial_norms = np.linalg.norm(initial_points.reshape(num_points_random, 3), axis=1)
+initial_points /= initial_norms[:, np.newaxis].repeat(3, axis=1).flatten()
 
-resultado = minimize_func(f_electron, x0, h_esfera)
+
+resultado = minimize_func(f_electron, initial_points, h_esfera)
 resultado
 ```
+
+
 
 ```{python}
 np.linalg.norm(h_esfera(resultado.x))
