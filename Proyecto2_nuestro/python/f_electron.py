@@ -1,6 +1,6 @@
 import numpy as np
 
-def fesfera(x):
+def f_electron(x):
     n = len(x)
     num_puntos = n//3
     # Reorganiza x para que cada fila sea un punto en el espacio tridimensional.

@@ -1,6 +1,6 @@
 import numpy as np
 
-def hesfera(x):
+def h_esfera(x):
     n = len(x)
     num_puntos = n//3
     h = np.zeros(num_puntos)
