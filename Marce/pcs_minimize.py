@@ -65,10 +65,13 @@ def h_esfera(x):
 # Definimos el número de puntos aleatorios que vamos a organizar
 # en la esfera menos 1 porque en la optimización se fija un punto de los np +1
 # para tener solución única.
+np.random.seed(191654)
+
 num_points_random = 20 # número de puntos que se solicitaron
 
 # Se generan los puntos aleatorios en el espacio para inicializar el método
 # de optimización y se normalizan para que estén en la esfera.
+
 initial_points = np.random.randn(3 * num_points_random)
 initial_norms = np.linalg.norm(initial_points.reshape(num_points_random, 3), axis=1)
 initial_points /= initial_norms[:, np.newaxis].repeat(3, axis=1).flatten()
