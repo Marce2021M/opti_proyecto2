@@ -1,3 +1,11 @@
+"""
+Autores: 
+    - Diana Espinosa Ruiz CU:
+    - Alfredo Alef Pineda Reyes CU:
+    - Marcelino Sanchez Rodriguez CU: 191654
+    - Carlos Alberto Delgado Elizondo CU: 181866
+
+"""
 import numpy as np
 
 def h_esfera(x):

@@ -1,12 +1,26 @@
+"""
+Autores: 
+    - Diana Espinosa Ruiz CU:
+    - Alfredo Alef Pineda Reyes CU:
+    - Marcelino Sanchez Rodriguez CU: 191654
+    - Carlos Alberto Delgado Elizondo CU: 181866
+
+"""
 import numpy as np
 from derivadas import gradiente, jacobiana, derivada
 from pc import pc
 
-def pcsglobal(fx, hx, x0):
+# Es el metodo principal del proyecto
+# Resuelve de forma iterativa el problema de minimización con 
+# programación cuadrática sucesiva, utilizando:
+# - Funciones de mérito para encontrar un alfa adecuada
+# - Actualización de mínimos cuadrados lineales para multiplicadores de Lagrange
+# - Actualización BFGS para la aproximación de la hessiana
+def pcs_global(fx, hx, x0):
     n = len(x0)
     m = len(hx(x0))
     tol = 1e-5
-    maximo_iteraciones = 500
+    maximo_iteraciones = 300
     iteraciones = 0
     B = np.eye(n)
     multiplicadores_Lagrange = np.zeros(m)
@@ -36,9 +50,9 @@ def pcsglobal(fx, hx, x0):
         # actualizamos las variables de paro
         iteraciones += 1
         cnpo = np.concatenate((gradiente_Lagrangeano_x(fx, hx, x, multiplicadores_Lagrange), hx(x)))
-        # if iteraciones % 10 == 0:
-        #     print(f"it {iteraciones}, cnpo norm:{np.linalg.norm(cnpo)}, f:{fx(x)}, maxh{max(hx(x))}, norm2h {np.linalg.norm(hx(x))}")
-    return x, multiplicadores_Lagrange, iteraciones
+        # if iteraciones % 20 == 0:
+        #     print(f"it {iteraciones}, cnpo norm:{np.linalg.norm(cnpo)}")
+    return x, multiplicadores_Lagrange, np.linalg.norm(cnpo), fx(x), iteraciones
 
 def funcion_merito(f, h, x_k, c_merito):
     return f(x_k) + c_merito * np.linalg.norm(h(x_k), 1)
@@ -61,10 +75,8 @@ def constante_funcion_merito(f, h, x_k, p_k, iter, C_max = 100):
 
 # Algoritmo auxiliar para la funcion de busqueda en linea
 # Tambien sacado del libro del Nocedal
-def zoom_busqueda_linea(phi, dphi, c1, c2, a_low, a_high, max_iter = 100):
-    iter = 0
-    found_alpha = False
-    while not found_alpha and iter < max_iter:
+def zoom_busqueda_linea(phi, dphi, c1, c2, a_low, a_high, max_iter = 20):
+    for iter in range(max_iter):
         a_j = (a_low + a_high)/2
         phi_aj = phi(a_j)
         if phi_aj > phi(0) + c1*a_j*dphi(0) or phi_aj >= phi(a_low):
@@ -72,42 +84,33 @@ def zoom_busqueda_linea(phi, dphi, c1, c2, a_low, a_high, max_iter = 100):
         else:
             dphi_aj = dphi(a_j)
             if abs(dphi_aj) <= -c2*dphi(0):
-                found_alpha = True
-                alpha = a_j
+                return a_j
             elif dphi_aj*(a_high - a_low) >= 0:
                 a_high = a_low
             a_low = a_j
-        iter += 1
-    if not found_alpha:
-        alpha = (a_low+a_high)/2
-    return alpha
+    return (a_low+a_high)/2
 
 # Algoritmo de busqueda en linea para que cumpla las condiciones de Wolfe
 # Tomado del Capitulo 3 del Nocedal
-def busqueda_en_linea(f, h, phi, x_k, p_k, C_merito, c1 = 1e-4, c2 = 0.9, max_iters = 100):
+def busqueda_en_linea(f, h, phi, x_k, p_k, C_merito, c1 = 1e-4, c2 = 0.9, max_iters = 10):
     dphi = lambda alpha_x: derivada(phi, alpha_x)
     alpha_max = 1
     alpha = 0.99
     last_alpha = 0
-    iter = 1
-    found_alpha = False
-    while iter < max_iters and not found_alpha:
+    for iter in range(1, max_iters):
         phi_alpha = phi(alpha) 
-        if phi_alpha > phi(0) + c1*alpha*dphi(0) or (iter > 1 and phi_alpha >= phi(last_alpha)):
-            found_alpha = True
-            alpha = zoom_busqueda_linea(phi, dphi, c1, c2, last_alpha, alpha)
+        dphi_zero = dphi(0)
+        if phi_alpha > phi(0) + c1*alpha*dphi_zero or (iter > 1 and phi_alpha >= phi(last_alpha)):
+            return zoom_busqueda_linea(phi, dphi, c1, c2, last_alpha, alpha)
         else:
             dphi_alpha = dphi(alpha)
-            if abs(dphi_alpha) <= -c2 * dphi(0):
-                found_alpha = True
-                # alpha remains alpha
+            if abs(dphi_alpha) <= -c2 * dphi_zero:
+                return alpha
             elif dphi_alpha >= 0:
-                found_alpha = True
-                alpha = zoom_busqueda_linea(phi, dphi, c1, c2, alpha, last_alpha)
+                return zoom_busqueda_linea(phi, dphi, c1, c2, alpha, last_alpha)
             else:
                 last_alpha = alpha
                 alpha = (alpha+alpha_max) / 2
-                iter += 1
     return alpha
 
 def busqueda_en_linea_2(phi, c1=1e-4):

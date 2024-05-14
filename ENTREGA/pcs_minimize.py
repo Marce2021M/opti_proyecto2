@@ -112,10 +112,11 @@ print(pd.DataFrame(data)) # Resultados de la tabla
 
 
 # Creación de gráfica
-
-# Supongamos que esta es la salida de tu optimización, por ejemplo
+fixed = np.array([1, 0, 0])
+resultado.x = np.concatenate([fixed, resultado.x])
 points = resultado.x.reshape(-1, 3)
-
+print("Puntos x, y, z")
+print(points)
 # Crear la figura
 fig = go.Figure()
 

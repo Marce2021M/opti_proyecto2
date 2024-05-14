@@ -1,3 +1,11 @@
+"""
+Autores: 
+    - Diana Espinosa Ruiz CU:
+    - Alfredo Alef Pineda Reyes CU:
+    - Marcelino Sanchez Rodriguez CU: 191654
+    - Carlos Alberto Delgado Elizondo CU: 181866
+
+"""
 import numpy as np
 
 def derivada(f, x0, ep = 1e-7):
@@ -35,5 +43,3 @@ def jacobiana(hx, x0, ep=1e-7):
         x_adelante[k] -= ep
         x_atras[k] += ep    
     return jh
-
-

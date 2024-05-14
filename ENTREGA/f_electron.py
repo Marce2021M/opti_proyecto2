@@ -1,3 +1,11 @@
+"""
+Autores: 
+    - Diana Espinosa Ruiz CU:
+    - Alfredo Alef Pineda Reyes CU:
+    - Marcelino Sanchez Rodriguez CU: 191654
+    - Carlos Alberto Delgado Elizondo CU: 181866
+
+"""
 import numpy as np
 
 def f_electron(x):
@@ -18,10 +26,7 @@ def f_electron(x):
     # Ahora, calcula la suma de las inversas de las distancias entre cada par de puntos
     for i in range(num_puntos):
         for j in range(i + 1, num_puntos):
-            # Calcula la distancia cuadrada entre el punto i y el punto j
-            distance_between_puntos = np.sum((puntos[i] - puntos[j]) ** 2)
-            # Suma la inversa de la raíz cuadrada de la distancia al total
-            f += 1 / np.sqrt(distance_between_puntos)
-
+            # Suma el inverso de la norma dos
+            f += 1 / np.linalg.norm(puntos[i]-puntos[j])
     return f
 

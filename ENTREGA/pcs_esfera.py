@@ -1,10 +1,18 @@
+"""
+Autores: 
+    - Diana Espinosa Ruiz CU:
+    - Alfredo Alef Pineda Reyes CU:
+    - Marcelino Sanchez Rodriguez CU: 191654
+    - Carlos Alberto Delgado Elizondo CU: 181866
+
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import time
 from f_electron import f_electron
 from h_esfera import h_esfera
-from pcsglobal import pcsglobal
+from pcs_global import pcs_global
 
 np.random.seed(0)
 
@@ -32,9 +40,11 @@ f = f_electron
 h = h_esfera
 
 tic = time.time()
-[x, L, iteraciones] = pcsglobal(f, h, x)  # utilizar el método para calcular los puntos.
+[x, _, cnpo_norm, fx, iteraciones] = pcs_global(f, h, x)  # utilizar el método para calcular los puntos.
 toc = time.time()
 duration = toc - tic
+
+print(f"np:{n+1} \tCNPO:{cnpo_norm} \tf(x*):{fx} \tcpu time:{duration}s")
 
 P = np.zeros((3, n+1))
 P[0,0] = 1
