@@ -1,7 +1,7 @@
 """
 Autores: 
     - Diana Espinosa Ruiz CU:
-    - Alfredo Alef Pineda Reyes CU:
+    - Alfredo Alef Pineda Reyes CU: 191164
     - Marcelino Sanchez Rodriguez CU: 191654
     - Carlos Alberto Delgado Elizondo CU: 181866
 
