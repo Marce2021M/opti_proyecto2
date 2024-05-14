@@ -1,24 +1,24 @@
 import numpy as np
-from gradiente import gradiente
-from jacobiana import jacobiana
+from derivadas import gradiente, jacobiana
 from pc import pc
 
 def pcsglobal(fx, hx, x0):
     n = len(x0)
     m = len(hx(x0))
     tol = 1e-5 # tolerancia
-    maximo_iteraciones = 100
+    maximo_iteraciones = 200
+    iteraciones = 0
     
     c1 = 1e-2 
     C0 = 1
-    x = x0
-    B = np.eye(n)
-    L = np.zeros(m)
-    iteraciones = 0
-    cnpo = np.concatenate((LAk(fx, hx, x, L), hx(x)))
     Cmax = 10e5
     Ck = C0
+
+    B = np.eye(n)
+    L = np.zeros(m)
     
+    x = x0
+    cnpo = np.concatenate((LAk(fx, hx, x, L), hx(x)))    
     while iteraciones < maximo_iteraciones and np.linalg.norm(cnpo) >= tol:
         # Resolver el subproblema cuadrático
         pk, L = pc(B, jacobiana(hx, x), gradiente(fx, x), -hx(x)) 
@@ -53,7 +53,7 @@ def pcsglobal(fx, hx, x0):
         
         iteraciones += 1
         cnpo = np.concatenate((LAk(fx, hx, x, L), hx(x)))
-        print(iteraciones, np.linalg.norm(cnpo), fx(x))
+        print(iteraciones, np.linalg.norm(cnpo), fx(x), max(hx(x)))
     return x, L, iteraciones
 
 def phi(fx, hx, xk, ck):
